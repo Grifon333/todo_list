@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
-import '../../domain/entity/group.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:todo_list/domain/entity/group.dart';
+import 'package:todo_list/domain/entity/task.dart';
 
 class TaskWidgetModel extends ChangeNotifier {
   int groupKey;
   late final Future<Box<Group>> _groupBox;
+
+  var _tasks = <Task>[];
+  List<Task> get tasks => _tasks.toList();
 
   Group? _group;
   Group? get group => _group;
@@ -24,12 +28,34 @@ class TaskWidgetModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _readTasks() {
+    _tasks = _group?.tasks ?? <Task>[];
+    notifyListeners();
+  }
+
+  void _setupListenTasks() async {
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(TaskAdapter());
+    }
+    await Hive.openBox<Task>('boxTasks');
+
+    final box = await _groupBox;
+    _readTasks();
+    box.listenable(keys: <dynamic>[groupKey]).addListener(_readTasks);
+  }
+
   void setup() {
     if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(GroupAdapter());
     }
-    _groupBox = Hive.openBox('boxGroups');
+    _groupBox = Hive.openBox<Group>('boxGroups');
     loadGroup();
+    _setupListenTasks();
+  }
+
+  void deleteTask(int groupIndex) async {
+    await _group?.tasks?.deleteFromHive(groupIndex);
+    await _group?.save();
   }
 }
 

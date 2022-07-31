@@ -76,7 +76,7 @@ class _GroupListRowWidget extends StatelessWidget {
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             icon: Icons.delete,
-            label: 'Archive',
+            label: 'Delete',
           ),
         ],
       ),
