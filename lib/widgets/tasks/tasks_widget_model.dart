@@ -57,6 +57,20 @@ class TaskWidgetModel extends ChangeNotifier {
     await _group?.tasks?.deleteFromHive(groupIndex);
     await _group?.save();
   }
+
+  void doneToggle(int groupIndex) async {
+    final task = tasks[groupIndex];
+    final currentState = task.isDone;
+    task.isDone = !currentState;
+    await task.save();
+    notifyListeners();
+
+    // final task = _group?.tasks?[groupIndex];
+    // final currentState = task?.isDone ?? false;
+    // task?.isDone = !currentState;
+    // await task?.save();
+    // notifyListeners();
+  }
 }
 
 class TaskWidgetModelProvider extends InheritedNotifier {

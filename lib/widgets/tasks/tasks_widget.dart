@@ -57,7 +57,8 @@ class _TaskListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tasksCount = TaskWidgetModelProvider.watch(context)?.model.tasks.length ?? 0;
+    final tasksCount =
+        TaskWidgetModelProvider.watch(context)?.model.tasks.length ?? 0;
 
     return ListView.separated(
       itemBuilder: (BuildContext context, int index) {
@@ -82,7 +83,14 @@ class _TaskListRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = TaskWidgetModelProvider.read(context)!.model;
-    final text = model.tasks[index].title ;
+    final text = model.tasks[index].title;
+
+    final icon = model.tasks[index].isDone
+        ? const Icon(Icons.done, color: Colors.green)
+        : null;
+    final style = model.tasks[index].isDone
+        ? const TextStyle(decoration: TextDecoration.lineThrough)
+        : null;
 
     return Slidable(
       endActionPane: ActionPane(
@@ -98,9 +106,12 @@ class _TaskListRowWidget extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        title: Text(text),
-        trailing: const Icon(Icons.chevron_right),
-        // onTap: () {},
+        title: Text(
+          text,
+          style: style,
+        ),
+        trailing: icon,
+        onTap: () => model.doneToggle(index),
       ),
     );
   }
