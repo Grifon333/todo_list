@@ -69,7 +69,7 @@ class _GroupListRowWidget extends StatelessWidget {
 
     return Slidable(
       endActionPane: ActionPane(
-        motion: DrawerMotion(),
+        motion: const DrawerMotion(),
         children: [
           SlidableAction(
             onPressed: ((context) => model.deleteGroup(indexInList)),
@@ -83,7 +83,7 @@ class _GroupListRowWidget extends StatelessWidget {
       child: ListTile(
         title: Text(group.name),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
+        onTap: () => model.showTasks(context, indexInList),
       ),
     );
   }
