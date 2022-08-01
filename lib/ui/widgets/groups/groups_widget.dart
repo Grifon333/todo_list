@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:todo_list/widgets/groups/groups_widget_model.dart';
+import 'package:todo_list/ui/widgets/groups/groups_widget_model.dart';
 
 class GroupsWidget extends StatelessWidget {
   const GroupsWidget({Key? key}) : super(key: key);

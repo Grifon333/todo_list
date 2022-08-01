@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:todo_list/domain/entity/group.dart';
 import 'package:todo_list/domain/entity/task.dart';
+import 'package:todo_list/ui/navigation/main_navigation.dart';
 
 class TaskWidgetModel extends ChangeNotifier {
   int groupKey;
@@ -19,7 +20,7 @@ class TaskWidgetModel extends ChangeNotifier {
   }
 
   void showForm(BuildContext context) {
-    Navigator.of(context).pushNamed('/groups/tasks/form', arguments: groupKey);
+    Navigator.of(context).pushNamed(MainNavigationRouteNames.tasksForm, arguments: groupKey);
   }
 
   void loadGroup() async {
