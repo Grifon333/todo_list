@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/domain/data_provider/box_manager.dart';
 import 'package:todo_list/domain/entity/task.dart';
 
-class TaskFormWidgetModel {
-  String taskText = '';
+class TaskFormWidgetModel extends ChangeNotifier {
+  var _taskText = '';
   int groupKey;
 
   TaskFormWidgetModel({
     required this.groupKey,
   });
 
+  set taskText(String value) {
+    bool isTaskTextEmpty = _taskText.trim().isEmpty;
+    _taskText = value;
+    if (value.trim().isEmpty != isTaskTextEmpty) {
+      notifyListeners();
+    }
+  }
+
+  bool get isValid => _taskText.trim().isNotEmpty;
+
   Future<void> saveTask(BuildContext context) async {
+    final taskText = _taskText.trim();
     if (taskText.isEmpty) return;
 
     final box = await BoxManager.instance.openTaskBox(groupKey);
@@ -22,14 +33,18 @@ class TaskFormWidgetModel {
   }
 }
 
-class TaskFormWidgetModelProvider extends InheritedWidget {
+class TaskFormWidgetModelProvider extends InheritedNotifier {
   final TaskFormWidgetModel model;
 
   const TaskFormWidgetModelProvider({
     Key? key,
     required this.model,
     required Widget child,
-  }) : super(key: key, child: child);
+  }) : super(
+          key: key,
+          notifier: model,
+          child: child,
+        );
 
   static TaskFormWidgetModelProvider? watch(BuildContext context) {
     return context

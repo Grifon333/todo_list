@@ -2,11 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/domain/data_provider/box_manager.dart';
 import 'package:todo_list/domain/entity/group.dart';
 
-class GroupFormWidgetModel {
-  var groupName = '';
+class GroupFormWidgetModel extends ChangeNotifier {
+  var _groupName = '';
+  String? errorText;
 
-  Future<void> saveGroup (BuildContext context) async {
-    if (groupName.isEmpty) return;
+  set groupName(String value) {
+    if (errorText != null && value.trim().isNotEmpty) {
+      errorText = null;
+      notifyListeners();
+    }
+    _groupName = value;
+  }
+
+  Future<void> saveGroup(BuildContext context) async {
+    final groupName = _groupName.trim();
+    if (groupName.isEmpty) {
+      errorText = 'Enter text';
+      notifyListeners();
+      return;
+    }
 
     final box = await BoxManager.instance.openGroupBox();
     final group = Group(name: groupName);
@@ -17,14 +31,18 @@ class GroupFormWidgetModel {
   }
 }
 
-class GroupFormWidgetModelProvider extends InheritedWidget {
+class GroupFormWidgetModelProvider extends InheritedNotifier {
   final GroupFormWidgetModel model;
 
   const GroupFormWidgetModelProvider({
     Key? key,
     required Widget child,
-    required this.model
-  }) : super(key: key, child: child);
+    required this.model,
+  }) : super(
+          key: key,
+          notifier: model,
+          child: child,
+        );
 
   static GroupFormWidgetModelProvider? watch(BuildContext context) {
     return context
